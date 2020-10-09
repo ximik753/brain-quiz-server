@@ -2,11 +2,15 @@ const express = require('express')
 const { portHttpServer } = require('../../config')
 const chalk = require('chalk')
 const authRoute = require('./routes/auth')
+const shopRoute = require('./routes/shop')
+const path = require('path')
 
 const app = express()
 app.use(express.json())
 
 app.use('/api/auth', authRoute)
+app.use('/api/shop', shopRoute)
+app.use('/images', express.static(path.join(__dirname, 'images')))
 
 const PORT = portHttpServer || 3000
 
