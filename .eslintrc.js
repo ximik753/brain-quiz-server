@@ -12,6 +12,8 @@ module.exports = {
     },
     rules: {
         semi: 'error',
-        indent: ['error', 4]
+        indent: ['error', 4],
+        'no-void': 'off',
+        curly: 'off'
     }
 }
