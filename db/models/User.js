@@ -16,9 +16,9 @@ const userSchema = new Schema({
         type: Number,
         default: 500
     },
-    iq: {
+    icon: {
         type: Number,
-        default: 0
+        required: true
     },
     boosters: [
         {
@@ -33,7 +33,21 @@ const userSchema = new Schema({
                 required: true
             }
         }
-    ]
+    ],
+    stats: {
+        gameTotal: {
+            type: Number,
+            default: 0
+        },
+        gameWinner: {
+            type: Number,
+            default: 0
+        },
+        iq: {
+            type: Number,
+            default: 0
+        }
+    }
 })
 
 userSchema.methods.buyBooster = function (booster) {

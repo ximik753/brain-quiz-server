@@ -14,26 +14,29 @@ router.post('/register',
         check('login', 'Некорректное имя пользователя').exists().isLength({
             min: 3,
             max: 7
-        })
+        }),
+        check('sex', 'Некорректный пол').exists()
     ],
     async (req, res) => {
         const errors = validationResult(req)
         if (!errors.isEmpty())
             return res.status(400).json({ error: errors.array()[0].msg })
 
-        const { login, password } = req.body
+        const { login, password, sex } = req.body
 
         const prevUser = await User.findOne({ login })
         if (prevUser)
             return res.status(400).json({ error: 'Пользователь с таким логином уже существует' })
 
         const hashedPassword = await bcrypt.hash(password, 12)
-        const user = new User({ login, password: hashedPassword })
+        const user = new User({ login, password: hashedPassword, icon: sex })
 
         try {
             const newUser = await user.save()
+            const accessToken = sign({ userId: newUser.id }, accessTokenSecret, { expiresIn: '5y' })
+
             res.status(201).json({
-                response: { id: newUser.id }
+                response: { token: accessToken }
             })
         } catch (e) {
             console.log(chalk(`Error: ${e.message}`))
