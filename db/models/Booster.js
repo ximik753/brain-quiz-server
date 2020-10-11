@@ -16,6 +16,10 @@ const boosterSchema = new Schema({
     cost: {
         type: Number,
         required: true
+    },
+    enabled: {
+        type: Boolean,
+        default: true
     }
 })
 

@@ -67,7 +67,6 @@ router.post('/login',
             return res.status(400).json({ error: 'Неверный логин или пароль' })
 
         const accessToken = sign({ userId: user.id }, accessTokenSecret, { expiresIn: '5y' })
-        await User.findOneAndUpdate(user.id, { token: accessToken })
         res.json({
             response: { token: accessToken }
         })

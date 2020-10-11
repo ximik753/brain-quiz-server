@@ -1,4 +1,4 @@
-const { Schema, model } = require('mongoose')
+const { Schema, model, Types } = require('mongoose')
 
 const userSchema = new Schema({
     login: {
@@ -12,13 +12,45 @@ const userSchema = new Schema({
         type: String,
         required: true
     },
-    token: {
-        type: String
-    },
     coins: {
         type: Number,
         default: 500
-    }
+    },
+    iq: {
+        type: Number,
+        default: 0
+    },
+    boosters: [
+        {
+            count: {
+                type: Number,
+                required: true,
+                default: 0
+            },
+            boosterId: {
+                type: Types.ObjectId,
+                ref: 'Booster',
+                required: true
+            }
+        }
+    ]
 })
+
+userSchema.methods.buyBooster = function (booster) {
+    const boosters = [...this.boosters]
+    const idx = boosters.findIndex(b => b.boosterId.toString() === booster._id.toString())
+
+    if (idx >= 0) {
+        boosters[idx].count = boosters[idx].count + 1
+    } else {
+        boosters.push({
+            boosterId: booster.id,
+            count: 1
+        })
+    }
+
+    this.boosters = boosters
+    return this.save()
+}
 
 module.exports = model('User', userSchema)
