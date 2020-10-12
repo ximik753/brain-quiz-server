@@ -1,7 +1,7 @@
 const { Schema, model, Types } = require('mongoose')
 
 const userSchema = new Schema({
-    login: {
+    name: {
         type: String,
         required: true,
         min: 3,
@@ -27,7 +27,7 @@ const userSchema = new Schema({
                 required: true,
                 default: 0
             },
-            boosterId: {
+            booster: {
                 type: Types.ObjectId,
                 ref: 'Booster',
                 required: true
@@ -50,21 +50,24 @@ const userSchema = new Schema({
     }
 })
 
-userSchema.methods.buyBooster = function (booster) {
+userSchema.methods.buyBooster = async function (booster) {
     const boosters = [...this.boosters]
-    const idx = boosters.findIndex(b => b.boosterId.toString() === booster._id.toString())
+    const idx = boosters.findIndex(b => b.booster.toString() === booster._id.toString())
 
     if (idx >= 0) {
         boosters[idx].count = boosters[idx].count + 1
     } else {
         boosters.push({
-            boosterId: booster.id,
+            booster: booster.id,
             count: 1
         })
     }
 
     this.boosters = boosters
-    return this.save()
+    await this.save()
+
+    const user = await this.populate('boosters.booster', 'icon title').execPopulate()
+    return user.boosters
 }
 
 module.exports = model('User', userSchema)
