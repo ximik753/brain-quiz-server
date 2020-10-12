@@ -11,8 +11,12 @@ function transformUserData (user) {
 }
 
 router.get('/', auth, async (req, res) => {
-    const user = transformUserData(req.user._doc)
-    res.json({ response: { ...user } })
+    const user = await req.user
+        .populate('boosters.booster', 'icon title')
+        .execPopulate()
+
+    const dataTransformed = transformUserData(user._doc)
+    res.json({ response: { ...dataTransformed } })
 })
 
 module.exports = router

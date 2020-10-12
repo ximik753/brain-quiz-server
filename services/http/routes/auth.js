@@ -11,7 +11,7 @@ const router = Router()
 router.post('/register',
     [
         check('password', 'Некорректный пароль').exists().isLength({ min: 6 }),
-        check('login', 'Некорректное имя пользователя').exists().isLength({
+        check('name', 'Некорректное имя пользователя').exists().isLength({
             min: 3,
             max: 7
         }),
@@ -22,14 +22,14 @@ router.post('/register',
         if (!errors.isEmpty())
             return res.status(400).json({ error: errors.array()[0].msg })
 
-        const { login, password, sex } = req.body
+        const { name, password, sex } = req.body
 
-        const prevUser = await User.findOne({ login })
+        const prevUser = await User.findOne({ name })
         if (prevUser)
             return res.status(400).json({ error: 'Пользователь с таким логином уже существует' })
 
         const hashedPassword = await bcrypt.hash(password, 12)
-        const user = new User({ login, password: hashedPassword, icon: sex })
+        const user = new User({ name, password: hashedPassword, icon: sex })
 
         try {
             const newUser = await user.save()
@@ -47,7 +47,7 @@ router.post('/register',
 router.post('/login',
     [
         check('password', 'Некорректный пароль').exists(),
-        check('login', 'Некорректный логин').exists().isLength({
+        check('name', 'Некорректный логин').exists().isLength({
             min: 3,
             max: 7
         })
@@ -58,9 +58,9 @@ router.post('/login',
         if (!errors.isEmpty())
             return res.status(400).json({ error: errors.array()[0].msg })
 
-        const { login, password } = req.body
+        const { name, password } = req.body
 
-        const user = await User.findOne({ login })
+        const user = await User.findOne({ name })
         if (!user)
             return res.status(400).json({ error: 'Неверный логин или пароль' })
 

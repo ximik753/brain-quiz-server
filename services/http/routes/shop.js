@@ -16,7 +16,7 @@ function transformBoosters (boosters) {
 }
 
 router.get('/', auth, async (req, res) => {
-    let boosters = await Booster.find({}, { __v: false })
+    let boosters = await Booster.find({ enabled: true }, { __v: false })
     boosters = transformBoosters(boosters)
 
     res.json({
@@ -27,9 +27,9 @@ router.get('/', auth, async (req, res) => {
 router.post('/:id', auth, async (req, res) => {
     try {
         const booster = await Booster.findById(req.params.id)
-        req.user.buyBooster(booster)
+        const boosters = await req.user.buyBooster(booster)
 
-        res.json({ response: 'ok' })
+        res.json({ response: [...boosters] })
     } catch (e) {
         res.json({ error: 'Бустер не найден' })
     }
