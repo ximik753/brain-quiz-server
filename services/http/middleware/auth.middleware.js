@@ -1,5 +1,4 @@
 const { verify } = require('jsonwebtoken')
-const { accessTokenSecret } = require('../../../config')
 const User = require('../../../db/models/User')
 
 module.exports = async (req, res, next) => {
@@ -10,7 +9,7 @@ module.exports = async (req, res, next) => {
         const token = req.headers.authorization.split(' ')[1]
         if (!token) return res.status(401)
 
-        const { userId } = verify(token, accessTokenSecret)
+        const { userId } = verify(token, process.env.ACCESS_TOKEN_SECRET)
         req.user = await User.findById(userId)
         next()
     } catch (e) {

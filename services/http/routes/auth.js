@@ -3,8 +3,8 @@ const User = require('../../../db/models/User')
 const { sign } = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const { check, validationResult } = require('express-validator')
-const { accessTokenSecret } = require('../../../config')
 const chalk = require('chalk')
+require('dotenv').config()
 
 const router = Router()
 
@@ -33,7 +33,7 @@ router.post('/register',
 
         try {
             const newUser = await user.save()
-            const accessToken = sign({ userId: newUser.id }, accessTokenSecret, { expiresIn: '5y' })
+            const accessToken = sign({ userId: newUser.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5y' })
 
             res.status(201).json({
                 response: { token: accessToken }
@@ -69,7 +69,7 @@ router.post('/login',
         if (!isMatch)
             return res.status(400).json({ error: 'Неверный логин или пароль' })
 
-        const accessToken = sign({ userId: user.id }, accessTokenSecret, { expiresIn: '5y' })
+        const accessToken = sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '5y' })
         res.json({
             response: { token: accessToken }
         })

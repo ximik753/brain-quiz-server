@@ -1,5 +1,4 @@
 const express = require('express')
-const { portHttpServer } = require('../../config')
 const chalk = require('chalk')
 const authRoute = require('./routes/auth')
 const shopRoute = require('./routes/shop')
@@ -14,6 +13,6 @@ app.use('/api/shop', shopRoute)
 app.use('/api/user', userRoute)
 app.use('/images', express.static(path.join(__dirname, 'images')))
 
-const PORT = portHttpServer || 3000
+const PORT = process.env.PORT_HTTP_SERVER || 3000
 
 app.listen(PORT, () => console.log(chalk.green(`✔ HTTP server listening on port ${PORT}`)))

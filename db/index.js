@@ -1,10 +1,9 @@
 const { connect } = require('mongoose')
-const { dbConnect } = require('../config')
 const chalk = require('chalk')
 
 void (async () => {
     try {
-        await connect(dbConnect, {
+        await connect(process.env.DB_CONNECT, {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useFindAndModify: false,
