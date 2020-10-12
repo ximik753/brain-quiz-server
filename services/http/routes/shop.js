@@ -10,7 +10,7 @@ function transformBoosters (boosters) {
 
         return {
             ...booster._doc,
-            icon: `http://localhost:3000/images/${booster._doc.icon}.png`
+            icon: `https://brain-quiz-server.herokuapp.com/images/${booster._doc.icon}.png`
         }
     })
 }
