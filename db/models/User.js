@@ -16,7 +16,7 @@ const userSchema = new Schema({
         type: Number,
         default: 500
     },
-    icon: {
+    avatar: {
         type: Number,
         required: true
     },

@@ -29,7 +29,7 @@ router.post('/register',
             return res.status(400).json({ error: 'Пользователь с таким логином уже существует' })
 
         const hashedPassword = await bcrypt.hash(password, 12)
-        const user = new User({ name, password: hashedPassword, icon: sex })
+        const user = new User({ name, password: hashedPassword, avatar: sex })
 
         try {
             const newUser = await user.save()
