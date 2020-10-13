@@ -15,6 +15,6 @@ app.use('/api/user', userRoute)
 app.use('/api/top', topRoute)
 app.use('/images', express.static(path.join(__dirname, 'images')))
 
-const PORT = process.env.PORT_HTTP_SERVER || 3000
+const PORT = process.env.PORT || 3000
 
 app.listen(PORT, () => console.log(chalk.green(`✔ HTTP server listening on port ${PORT}`)))
