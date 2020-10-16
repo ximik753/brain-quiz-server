@@ -27,11 +27,14 @@ router.get('/', auth, async (req, res) => {
 router.post('/:id', auth, async (req, res) => {
     try {
         const booster = await Booster.findById(req.params.id)
-        const boosters = await req.user.buyBooster(booster)
+        const data = await req.user.buyBooster(booster)
 
-        res.json({ response: [...boosters] })
+        if (typeof data === 'object')
+            res.json({ response: { ...data } })
+        else
+            res.status(400).json({ error: data })
     } catch (e) {
-        res.json({ error: 'Бустер не найден' })
+        res.status(400).json({ error: 'Бустер не найден' })
     }
 })
 
