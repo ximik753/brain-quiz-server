@@ -8,6 +8,11 @@ function transformUserData (user) {
     delete user._id
     delete user.password
 
+    user.boosters = user.boosters.map(booster => {
+        booster.booster.icon = `https://brain-quiz-server.herokuapp.com/images/${booster.booster.icon}.png`
+        return booster
+    })
+
     return user
 }
 
