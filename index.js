@@ -4,11 +4,13 @@ const chalk = require('chalk')
 const Session = require('./packets/session')
 const fs = require('fs')
 const WebSocket = require('ws')
+const Game = require('./logic/Game/game')
 
 const ws = new WebSocket.Server({ port: 8080 })
 
 packets = {}
 clients = []
+game = new Game()
 
 fs.readdir('./packets/client', (err, files) => {
     if (err) {

@@ -14,6 +14,7 @@ module.exports = {
         semi: 'error',
         indent: ['error', 4],
         'no-void': 'off',
-        curly: 'off'
+        curly: 'off',
+        'no-undef': 'off'
     }
 }

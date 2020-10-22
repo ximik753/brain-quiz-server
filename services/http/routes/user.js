@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const router = Router()
 const auth = require('../middleware/auth.middleware')
+const Game = require('../../../logic/Game/game')
 const { check, validationResult } = require('express-validator')
 
 function transformUserData (user) {
@@ -12,6 +13,8 @@ function transformUserData (user) {
         booster.booster.icon = `https://brain-quiz-server.herokuapp.com/images/${booster.booster.icon}.png`
         return booster
     })
+
+    user.nextGameDate = Game.NextGameDate
 
     return user
 }
