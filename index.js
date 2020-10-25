@@ -1,12 +1,16 @@
-require('./services/http')
 require('./db')
 const chalk = require('chalk')
 const Session = require('./packets/session')
 const fs = require('fs')
-const WebSocket = require('ws')
+const { Server } = require('ws')
 const Game = require('./logic/Game/game')
+const http = require('http')
+const express = require('express')
 
-const ws = new WebSocket.Server({ port: 8080 })
+app = express()
+const server = http.createServer(app)
+const ws = new Server({ server })
+require('./services/http')
 
 packets = {}
 clients = []
@@ -52,4 +56,5 @@ ws.on('connection', client => {
     })
 })
 
-console.log(chalk.green('[SERVER] Listening on 8080'))
+const PORT = process.env.PORT || 8080
+server.listen(PORT, () => console.log(chalk.green(`[SERVER] Listening on ${PORT}`)))

@@ -8,7 +8,6 @@ const topRoute = require('./routes/top')
 const questionRoute = require('./routes/question')
 const path = require('path')
 
-const app = express()
 app.use(express.json())
 app.use(cors())
 
@@ -21,4 +20,4 @@ app.use('/images', express.static(path.join(__dirname, 'images')))
 
 const PORT = process.env.PORT || 3000
 
-app.listen(PORT, () => console.log(chalk.green(`✔ HTTP server listening on port ${PORT}`)))
+console.log(chalk.green(`✔ HTTP server listening on port ${PORT}`))

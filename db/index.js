@@ -1,5 +1,6 @@
 const { connect } = require('mongoose')
 const chalk = require('chalk')
+require('dotenv').config()
 
 void (async () => {
     try {
