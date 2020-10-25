@@ -1,6 +1,7 @@
 const express = require('express')
 const chalk = require('chalk')
 const authRoute = require('./routes/auth')
+const cors = require('cors')
 const shopRoute = require('./routes/shop')
 const userRoute = require('./routes/user')
 const topRoute = require('./routes/top')
@@ -9,6 +10,7 @@ const path = require('path')
 
 const app = express()
 app.use(express.json())
+app.use(cors())
 
 app.use('/api/auth', authRoute)
 app.use('/api/shop', shopRoute)
