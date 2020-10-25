@@ -10,8 +10,8 @@ module.exports.callback = async (session, { token }) => {
     if (user) {
         session.user = user
         clients.push({ ...user, session })
-        session.send(packets.HomeData.code, packets.HomeData.payload)
+        session.send(packets.HomeData.code, packets.HomeData.callback())
     } else {
-        session.send(packets.LoginFailed.code, packets.HomeData.payload)
+        session.send(packets.LoginFailed.code, packets.LoginFailed.payload)
     }
 }

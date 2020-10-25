@@ -3,13 +3,14 @@ const { green } = require('chalk')
 
 const statusGame = Object.freeze({
     waitGame: 0,
-    waitPlayers: 0,
-    startQuiz: 0
+    waitPlayers: 1,
+    startQuiz: 2,
+    endingQuiz: 3
 })
 
 class Game {
     constructor () {
-        this._status = statusGame.waitGame
+        this.status = statusGame.waitGame
         /*
             стэйт ожидания игроков
         */
@@ -27,24 +28,30 @@ class Game {
     }
 
     static get NextGameDate () {
-        return new Date('10.24.2020 21:00') / 1000
+        return new Date('10.25.2020 21:00') / 1000
     }
 
     start () {
-        const id = setInterval(() => {
+        this.status = statusGame.waitPlayers
+
+        const id = setInterval(async () => {
             this._startTime -= 1000
 
             if (this._startTime === 0) {
                 this.status = statusGame.startQuiz
-                this._play()
-                clearInterval(id)
+
+                this._updateStatus()
+                await this._wait(() => {
+                    this._play()
+                    clearInterval(id)
+                }, 1000)
             }
         }, 1000)
     }
 
     async _play () {
         this._questions = await Question.find({})
-        console.log(green('Quiz Started!'))
+        console.log(green('Quiz start!'))
 
         while (this._currentQuestionNumber + 1 !== this._totalQuestions) {
             this._currentQuestion = this._getRandomElementByComplexity(this._complexity)
@@ -56,6 +63,11 @@ class Game {
             await this._wait(() => this._mailing(packets.RightAnswer.code, packets.RightAnswer.callback(this._currentQuestion)), 1000)
             await this._wait(() => console.log('ожидание нового вопроса'), 3000)
         }
+
+        this.status = statusGame.endingQuiz
+        this._updateStatus()
+
+        console.log(green('Quiz end!'))
     }
 
     _wait (callback, ms) {
@@ -89,7 +101,7 @@ class Game {
         const id = setInterval(() => {
             if (this._currentQuestionTimer > 0) {
                 this._currentQuestionTimer -= 1000
-                return
+                return null
             }
 
             this._currentQuestionNumber += 1
@@ -99,22 +111,23 @@ class Game {
         }, 1000)
     }
 
+    _updateStatus () {
+        this._mailing(packets.UpdateStatus.code, packets.UpdateStatus.callback(this.status, this.GameState))
+    }
+
     _mailing (packetCode, payload) {
         clients.forEach(user => user.session.send(packetCode, payload))
     }
 
     get GameState () {
-        switch (this._status) {
+        switch (this.status) {
         case statusGame.waitPlayers:
             return {
-                startTime: this._startTime / 1000,
-                totalQuestion: this._totalQuestions
+                startTime: this._startTime / 1000
             }
         case statusGame.startQuiz:
             return {
-                currentQuestion: this._currentQuestionTimer,
-                currentQuestionNumber: this._currentQuestionNumber,
-                totalQuestion: this._totalQuestions
+                totalQuestions: this._totalQuestions
             }
         }
     }

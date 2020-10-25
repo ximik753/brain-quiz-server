@@ -1,8 +1,9 @@
 module.exports.code = 20102
 
-module.exports.payload = {
-    get online () {
-        return clients.length
-    },
-    ...game.GameState
+module.exports.callback = () => {
+    return {
+        ...game.GameState,
+        status: game.status,
+        online: clients.length
+    }
 }
