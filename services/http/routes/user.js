@@ -16,6 +16,10 @@ function transformUserData (user) {
 
     user.nextGameDate = Game.NextGameDate
 
+    if (game.status === 1) {
+        user.status = game.status
+    }
+
     return user
 }
 

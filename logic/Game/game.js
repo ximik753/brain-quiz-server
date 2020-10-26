@@ -28,7 +28,7 @@ class Game {
     }
 
     static get NextGameDate () {
-        return new Date('10.25.2020 21:00') / 1000
+        return new Date('10.26.2020 18:35') / 1000
     }
 
     start () {
@@ -53,7 +53,7 @@ class Game {
         this._questions = await Question.find({})
         console.log(green('Quiz start!'))
 
-        while (this._currentQuestionNumber + 1 !== this._totalQuestions) {
+        while (this._currentQuestionNumber !== this._totalQuestions + 1) {
             this._currentQuestion = this._getRandomElementByComplexity(this._complexity)
 
             this._timer()

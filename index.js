@@ -6,6 +6,7 @@ const { Server } = require('ws')
 const Game = require('./logic/Game/game')
 const http = require('http')
 const express = require('express')
+const schedule = require('node-schedule')
 
 app = express()
 const server = http.createServer(app)
@@ -15,6 +16,10 @@ require('./services/http')
 packets = {}
 clients = []
 game = new Game()
+
+schedule.scheduleJob(new Date('10.26.2020 18:35'), () => {
+    game.start()
+})
 
 fs.readdir('./packets/client', (err, files) => {
     if (err) {
