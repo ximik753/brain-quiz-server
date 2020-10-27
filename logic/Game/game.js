@@ -19,10 +19,10 @@ class Game {
         /*
             стэйт игры
         */
-        this._currentQuestionNumber = 1
+        this.currentQuestionNumber = 1
         this._totalQuestions = 12
         this._currentQuestionTimer = 10000
-        this._currentQuestion = null
+        this.currentQuestion = null
         this._questions = []
         this._complexity = 1
     }
@@ -40,7 +40,7 @@ class Game {
                 await this._wait(() => {
                     this._play()
                     clearInterval(id)
-                }, 1000)
+                }, 1)
             }
         }, 1000)
     }
@@ -49,28 +49,37 @@ class Game {
         this._questions = await Question.find({})
         console.log(green('Quiz start!'))
 
-        while (this._currentQuestionNumber !== this._totalQuestions + 1) {
-            this._currentQuestion = this._getRandomElementByComplexity(this._complexity)
+        while (this.currentQuestionNumber !== this._totalQuestions + 1) {
+            this.currentQuestion = this._getRandomElementByComplexity(this._complexity)
 
             this._timer()
-            this._mailing(packets.NewQuestion.code, packets.NewQuestion.callback(this._currentQuestion, this._currentQuestionNumber))
+            this._mailing(packets.NewQuestion.code, packets.NewQuestion.callback(this.currentQuestion, this.currentQuestionNumber))
 
-            await this._wait(() => console.log('время вышло'), 10000)
-            await this._wait(() => this._mailing(packets.RightAnswer.code, packets.RightAnswer.callback(this._currentQuestion)), 1000)
-            await this._wait(() => console.log('ожидание нового вопроса'), 3000)
+            await this._wait(() => console.log('время вышло'), 10)
+            await this._wait(() => this._mailing(packets.RightAnswer.code, packets.RightAnswer.callback(this.currentQuestion)), 1)
+            await this._wait(() => {
+                this.currentQuestionNumber += 1
+                this._currentQuestionTimer = 10000
+                this._checkComplexity()
+            }, 4)
         }
 
         this.status = statusGame.endingQuiz
         this._updateStatus()
 
+        await this._wait(() => {
+            this.status = statusGame.waitGame
+            this._updateStatus()
+        }, 10)
+
         console.log(green('Quiz end!'))
     }
 
-    _wait (callback, ms) {
+    _wait (callback, sec) {
         return new Promise(resolve => setTimeout(() => {
             callback()
             resolve()
-        }, ms))
+        }, sec * 1000))
     }
 
     _getRandomElementByComplexity (complexity) {
@@ -83,7 +92,7 @@ class Game {
     }
 
     _checkComplexity () {
-        switch (this._currentQuestionNumber) {
+        switch (this.currentQuestionNumber) {
         case 5:
             this._complexity = 2
             break
