@@ -76,4 +76,18 @@ userSchema.methods.buyBooster = async function (booster) {
     }
 }
 
+userSchema.methods.useBooster = async function (booster) {
+    const boosters = [...this.boosters]
+    const idx = boosters.findIndex(b => b.booster.toString() === booster.booster.toString())
+
+    if (boosters[idx].count > 1) {
+        boosters[idx].count = boosters[idx].count - 1
+    } else {
+        boosters.splice(idx, 1)
+    }
+
+    this.boosters = boosters
+    await this.save()
+}
+
 module.exports = model('User', userSchema)
