@@ -17,7 +17,7 @@ packets = {}
 clients = []
 game = new Game()
 
-schedule.scheduleJob(new Date('10.26.2020 18:35'), () => {
+nextGameDate = schedule.scheduleJob('0 12,20 * * *', () => {
     game.start()
 })
 

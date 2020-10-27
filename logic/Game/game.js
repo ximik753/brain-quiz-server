@@ -27,10 +27,6 @@ class Game {
         this._complexity = 1
     }
 
-    static get NextGameDate () {
-        return new Date('10.26.2020 18:35') / 1000
-    }
-
     start () {
         this.status = statusGame.waitPlayers
 

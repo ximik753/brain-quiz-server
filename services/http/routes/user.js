@@ -1,7 +1,6 @@
 const { Router } = require('express')
 const router = Router()
 const auth = require('../middleware/auth.middleware')
-const Game = require('../../../logic/Game/game')
 const { check, validationResult } = require('express-validator')
 
 function transformUserData (user) {
@@ -14,7 +13,7 @@ function transformUserData (user) {
         return booster
     })
 
-    user.nextGameDate = Game.NextGameDate
+    user.nextGameDate = Date.parse(new Date(nextGameDate.nextInvocation()).toString()) / 1000
 
     if (game.status === 1) {
         user.status = game.status
