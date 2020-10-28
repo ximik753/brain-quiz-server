@@ -21,14 +21,16 @@ class Game {
         */
         this.currentQuestionNumber = 1
         this._totalQuestions = 12
-        this._currentQuestionTimer = 10000
         this.currentQuestion = null
         this._questions = []
         this._complexity = 1
     }
 
-    start () {
-        this.status = statusGame.waitPlayers
+    async start () {
+        console.log(green('[QUIZ] wait players!'))
+        await this._wait(() => {
+            this.status = statusGame.waitPlayers
+        }, 1)
 
         const id = setInterval(async () => {
             this._startTime -= 1000
@@ -47,7 +49,7 @@ class Game {
 
     async _play () {
         this._questions = await Question.find({})
-        console.log(green('Quiz start!'))
+        console.log(green('[QUIZ] start!'))
 
         while (this.currentQuestionNumber !== this._totalQuestions + 1) {
             this.currentQuestion = this._getRandomElementByComplexity(this._complexity)
@@ -55,11 +57,10 @@ class Game {
             this._timer()
             this._mailing(packets.NewQuestion.code, packets.NewQuestion.callback(this.currentQuestion, this.currentQuestionNumber))
 
-            await this._wait(() => console.log('время вышло'), 10)
+            await this._wait(() => console.log(green('[QUIZ] send answers')), 10)
             await this._wait(() => this._mailing(packets.RightAnswer.code, packets.RightAnswer.callback(this.currentQuestion)), 1)
             await this._wait(() => {
                 this.currentQuestionNumber += 1
-                this._currentQuestionTimer = 10000
                 this._checkComplexity()
             }, 4)
         }
@@ -72,7 +73,7 @@ class Game {
             this._updateStatus()
         }, 10)
 
-        console.log(green('Quiz end!'))
+        console.log(green('[QUIZ] end!'))
     }
 
     _wait (callback, sec) {
@@ -109,9 +110,6 @@ class Game {
                 return null
             }
 
-            this._currentQuestionNumber += 1
-            this._currentQuestionTimer = 10000
-            this._checkComplexity()
             clearInterval(id)
         }, 1000)
     }
@@ -128,10 +126,7 @@ class Game {
         switch (this.status) {
         case statusGame.waitPlayers:
             return {
-                startTime: this._startTime / 1000
-            }
-        case statusGame.startQuiz:
-            return {
+                startTime: this._startTime / 1000,
                 totalQuestions: this._totalQuestions
             }
         }

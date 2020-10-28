@@ -7,7 +7,6 @@ module.exports = async session => {
         if (booster) {
             session.game.useBoosterIq = true
             await session.user.useBooster(booster)
-            console.log(session.user)
         }
     }
 }
