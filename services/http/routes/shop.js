@@ -17,11 +17,7 @@ function transformBoosters (boosters) {
 
 function transformBuyData (data) {
     data.boosters = data.boosters.map(booster => {
-        booster.booster = {
-            title: booster.booster._doc.title,
-            icon: `https://brain-quiz-server.herokuapp.com/images/${booster.booster._doc.icon}.png`
-        }
-
+        booster.booster.icon = `https://brain-quiz-server.herokuapp.com/images/${booster.booster.icon}.png`
         return booster
     })
 
