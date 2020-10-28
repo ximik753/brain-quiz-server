@@ -17,9 +17,7 @@ packets = {}
 clients = []
 game = new Game()
 
-nextGameDate = schedule.scheduleJob('0 12,20 * * *', () => {
-    game.start()
-})
+nextGameDate = schedule.scheduleJob(process.env.CRON_RULE.toString(), async () => await game.start())
 
 fs.readdir('./packets/client', (err, files) => {
     if (err) {

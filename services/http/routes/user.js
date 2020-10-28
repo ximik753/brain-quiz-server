@@ -13,7 +13,9 @@ function transformUserData (user) {
         return booster
     })
 
-    user.nextGameDate = Date.parse(new Date(nextGameDate.nextInvocation()).toString()) / 1000
+    if (game.status === 0) {
+        user.nextGameDate = 60 + Date.parse(new Date(nextGameDate.nextInvocation()).toString()) / 1000
+    }
 
     if (game.status === 1) {
         user.status = game.status
