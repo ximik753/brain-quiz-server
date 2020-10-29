@@ -68,6 +68,8 @@ class Game {
         this.status = statusGame.endingQuiz
         this._updateStatus()
 
+        this._mailing(packets.GameWinners.code, packets.GameWinners.callback(this._getWinners()))
+
         await this._wait(() => {
             this.status = statusGame.waitGame
             this._updateStatus()
@@ -120,6 +122,15 @@ class Game {
 
     _mailing (packetCode, payload) {
         clients.forEach(user => user.session.send(packetCode, payload))
+    }
+
+    _getWinners () {
+        return clients
+            .filter(client => client.session.game.incorrectAnswer === null)
+            .map(client => {
+                const { name, avatar } = client.session.user
+                return { name, avatar }
+            })
     }
 
     get GameState () {
