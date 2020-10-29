@@ -126,7 +126,7 @@ class Game {
 
     _getWinners () {
         return clients
-            .filter(client => client.session.game.incorrectAnswer === null)
+            .filter(client => client.session.game.winner)
             .map(client => {
                 const { name, avatar } = client.session.user
                 return { name, avatar }

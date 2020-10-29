@@ -7,7 +7,10 @@ const stateGame = {
     connected: true,
     incorrectAnswer: null,
     useBoosterIq: false,
-    useExtraLife: false
+    useExtraLife: false,
+    winner: false,
+    coins: 0,
+    iq: 0
 }
 
 module.exports.callback = async (session, { token }) => {
