@@ -24,6 +24,12 @@ class Game {
         this.currentQuestion = null
         this._questions = []
         this._complexity = 1
+
+        /*
+            стэйт расчёта iq
+        */
+        this.coefficientIQ = 10
+        this.coefficientCoins = 5
     }
 
     async start () {
@@ -61,14 +67,21 @@ class Game {
             await this._wait(() => this._mailing(packets.RightAnswer.code, packets.RightAnswer.callback(this.currentQuestion)), 1)
             await this._wait(() => {
                 this.currentQuestionNumber += 1
+                this.coefficientIQ += Math.trunc(this.coefficientIQ * 1.15)
+                this.coefficientCoins += 1
                 this._checkComplexity()
             }, 4)
         }
 
+        await this._end()
+    }
+
+    async _end () {
         this.status = statusGame.endingQuiz
         this._updateStatus()
 
         this._mailing(packets.GameWinners.code, packets.GameWinners.callback(this._getWinners()))
+        await this._updateUserData()
 
         await this._wait(() => {
             this.status = statusGame.waitGame
@@ -76,6 +89,13 @@ class Game {
         }, 10)
 
         console.log(green('[QUIZ] end!'))
+    }
+
+    async _updateUserData () {
+        for (const client of clients) {
+            const { coins, iq } = client.session.game
+            await client.session.user.updateOne({ coins, $inc: { 'stats.iq': iq } })
+        }
     }
 
     _wait (callback, sec) {
