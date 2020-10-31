@@ -94,7 +94,7 @@ class Game {
     async _updateUserData () {
         for (const client of clients) {
             const { coins, iq } = client.session.game
-            await client.session.user.updateOne({ coins, $inc: { 'stats.iq': iq } })
+            await client.session.user.updateOne({ $inc: { 'stats.iq': iq, coins } })
         }
     }
 
